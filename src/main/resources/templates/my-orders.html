@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的订单 - 家具商城</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="bg-light">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="container py-5">
+        <section class="section-panel">
+            <div class="page-hero page-hero--compact">
+                <div>
+                    <div class="subtle-chip mb-3">
+                        <i class="bi bi-box-seam"></i>
+                        <span>订单中心</span>
+                    </div>
+                    <h1 class="page-hero-title">我的订单</h1>
+                    <p class="page-hero-copy">查看下单进度、物流状态和历史记录，所有购物轨迹都集中在这里。</p>
+                </div>
+                <a th:href="@{/products}" class="btn btn-outline-primary page-hero-action">
+                    <i class="bi bi-bag me-1"></i>
+                    继续逛逛
+                </a>
+            </div>
+
+            <div class="order-filter-bar">
+                <a th:href="@{/order/my-orders}"
+                   class="order-filter-pill"
+                   th:classappend="${status == null} ? ' active' : ''">
+                    <i class="bi bi-grid-3x3-gap"></i>
+                    <span>全部</span>
+                </a>
+                <a th:href="@{/order/my-orders(status='PENDING')}"
+                   class="order-filter-pill"
+                   th:classappend="${status == 'PENDING'} ? ' active' : ''">
+                    <i class="bi bi-hourglass-split"></i>
+                    <span>待付款</span>
+                </a>
+                <a th:href="@{/order/my-orders(status='SHIPPED')}"
+                   class="order-filter-pill"
+                   th:classappend="${status == 'SHIPPED'} ? ' active' : ''">
+                    <i class="bi bi-truck"></i>
+                    <span>待收货</span>
+                </a>
+                <a th:href="@{/order/my-orders(status='COMPLETED')}"
+                   class="order-filter-pill"
+                   th:classappend="${status == 'COMPLETED'} ? ' active' : ''">
+                    <i class="bi bi-patch-check"></i>
+                    <span>已完成</span>
+                </a>
+                <a th:href="@{/order/my-orders(status='CANCELLED')}"
+                   class="order-filter-pill"
+                   th:classappend="${status == 'CANCELLED'} ? ' active' : ''">
+                    <i class="bi bi-x-circle"></i>
+                    <span>已取消</span>
+                </a>
+            </div>
+
+            <div th:if="${#lists.isEmpty(orders)}" class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="bi bi-inbox"></i>
+                </div>
+                <h3 class="empty-state-title">当前还没有订单</h3>
+                <p class="empty-state-copy">不妨先去挑几件喜欢的家具，订单创建后会马上出现在这里。</p>
+                <a th:href="@{/products}" class="btn btn-primary">
+                    <i class="bi bi-arrow-right me-1"></i>
+                    去选购
+                </a>
+            </div>
+
+            <div th:if="${!#lists.isEmpty(orders)}" class="order-stack">
+                <article class="order-card-v2" th:each="order : ${orders}">
+                    <div class="order-card-v2__head">
+                        <div>
+                            <div class="order-card-v2__label">订单号</div>
+                            <div class="order-card-v2__number" th:text="${order.orderNo}">ORD202605230001</div>
+                        </div>
+                        <div class="text-md-end">
+                            <div class="order-card-v2__label">下单时间</div>
+                            <div class="order-card-v2__time" th:text="${#temporals.format(order.createdAt, 'yyyy-MM-dd HH:mm')}">2026-05-23 16:30</div>
+                        </div>
+                    </div>
+
+                    <div class="order-card-v2__body">
+                        <div class="order-summary-grid">
+                            <div>
+                                <div class="summary-caption">状态</div>
+                                <span class="status-pill"
+                                      th:classappend="${order.status.name() == 'PENDING'} ? ' status-pill--pending' :
+                                                      (${order.status.name() == 'SHIPPED'} ? ' status-pill--shipped' :
+                                                      (${order.status.name() == 'COMPLETED'} ? ' status-pill--completed' : ' status-pill--cancelled'))"
+                                      th:text="${order.status.name() == 'PENDING'} ? '待付款' :
+                                              (${order.status.name() == 'SHIPPED'} ? '待收货' :
+                                              (${order.status.name() == 'COMPLETED'} ? '已完成' : '已取消'))">
+                                    待付款
+                                </span>
+                            </div>
+                            <div>
+                                <div class="summary-caption">配送地址</div>
+                                <div class="summary-value summary-value--wrap" th:text="${order.address}">上海市浦东新区张江路 88 号</div>
+                            </div>
+                            <div>
+                                <div class="summary-caption">联系电话</div>
+                                <div class="summary-value" th:text="${order.phone}">13800138000</div>
+                            </div>
+                            <div>
+                                <div class="summary-caption">订单金额</div>
+                                <div class="summary-price" th:text="'¥' + ${order.totalAmount}">¥2599.00</div>
+                            </div>
+                        </div>
+
+                        <div class="order-items-preview">
+                            <div class="order-item-preview" th:each="item : ${order.orderItems}">
+                                <div th:replace="~{fragments/product-image :: thumb(product=${item.product})}"></div>
+                                <div class="order-item-preview__content">
+                                    <div class="order-item-preview__name" th:text="${item.productName}">北欧餐桌</div>
+                                    <div class="order-item-preview__meta">
+                                        <span th:text="'数量 x ' + ${item.quantity}">数量 x 1</span>
+                                        <span th:text="'¥' + ${item.price}">¥2599.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="order-card-v2__foot">
+                        <div class="order-count" th:text="'共 ' + ${#lists.size(order.orderItems)} + ' 件商品'">共 1 件商品</div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a th:href="@{/order/{id}(id=${order.id})}" class="btn btn-outline-primary">
+                                <i class="bi bi-eye me-1"></i>
+                                查看详情
+                            </a>
+                            <form th:if="${order.status.name() == 'PENDING'}" th:action="@{/order/{id}/cancel(id=${order.id})}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-outline-danger">
+                                    <i class="bi bi-x-circle me-1"></i>
+                                    取消订单
+                                </button>
+                            </form>
+                            <form th:if="${order.status.name() == 'SHIPPED'}" th:action="@{/order/{id}/confirm(id=${order.id})}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    确认收货
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <span th:fragment="badge(status)" th:switch="${status.name()}">
+        <span th:case="'PENDING'" class="badge bg-warning">待付款</span>
+        <span th:case="'PAID'" class="badge bg-primary">已付款</span>
+        <span th:case="'SHIPPED'" class="badge bg-info">已发货</span>
+        <span th:case="'COMPLETED'" class="badge bg-success">已完成</span>
+        <span th:case="'CANCELLED'" class="badge bg-secondary">已取消</span>
+        <span th:case="'REFUNDING'" class="badge bg-warning text-dark">退款中</span>
+        <span th:case="'REFUNDED'" class="badge bg-dark">已退款</span>
+        <span th:case="*" class="badge bg-light text-dark" th:text="${status.name()}"></span>
+    </span>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卖家中心 - 家具商城</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="bg-light">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="container py-5">
+        <div class="row g-4">
+            <div class="col-lg-3">
+                <aside class="profile-side-card">
+                    <div class="profile-side-head">
+                        <span class="profile-side-icon"><i class="bi bi-shop-window"></i></span>
+                        <div>
+                            <div class="profile-side-title">卖家中心</div>
+                            <div class="profile-side-subtitle">查看在售商品与店铺经营概览</div>
+                        </div>
+                    </div>
+                    <nav class="profile-menu">
+                        <a th:href="@{/seller}" class="profile-menu-link active">
+                            <i class="bi bi-grid"></i>
+                            <span>商品概览</span>
+                        </a>
+                        <a th:href="@{/seller/orders}" class="profile-menu-link">
+                            <i class="bi bi-receipt-cutoff"></i>
+                            <span>订单管理</span>
+                        </a>
+                        <a th:href="@{/seller/products/new}" class="profile-menu-link">
+                            <i class="bi bi-plus-square"></i>
+                            <span>发布商品</span>
+                        </a>
+                    </nav>
+                </aside>
+            </div>
+
+            <div class="col-lg-9">
+                <section class="section-panel">
+                    <div class="page-hero">
+                        <div>
+                            <div class="subtle-chip mb-3">
+                                <i class="bi bi-bar-chart"></i>
+                                <span>店铺经营概览</span>
+                            </div>
+                            <h1 class="page-hero-title">卖家中心</h1>
+                            <p class="page-hero-copy">这里集中展示当前店铺商品、库存水位和本月成交表现，方便快速处理日常经营工作。</p>
+                        </div>
+                        <a th:href="@{/seller/products/new}" class="btn btn-primary page-hero-action">
+                            <i class="bi bi-plus-lg me-1"></i>
+                            新增商品
+                        </a>
+                    </div>
+
+                    <div class="seller-metric-grid">
+                        <div class="seller-metric-card">
+                            <div class="seller-metric-icon"><i class="bi bi-box-seam"></i></div>
+                            <div class="seller-metric-label">商品总数</div>
+                            <div class="seller-metric-value" th:text="${totalProducts}">3</div>
+                        </div>
+                        <div class="seller-metric-card">
+                            <div class="seller-metric-icon"><i class="bi bi-check2-circle"></i></div>
+                            <div class="seller-metric-label">在售商品</div>
+                            <div class="seller-metric-value" th:text="${activeProducts}">2</div>
+                        </div>
+                        <div class="seller-metric-card">
+                            <div class="seller-metric-icon"><i class="bi bi-exclamation-circle"></i></div>
+                            <div class="seller-metric-label">低库存提醒</div>
+                            <div class="seller-metric-value" th:text="${lowStockProducts}">1</div>
+                        </div>
+                        <div class="seller-metric-card">
+                            <div class="seller-metric-icon"><i class="bi bi-cash-coin"></i></div>
+                            <div class="seller-metric-label">本月成交额</div>
+                            <div class="seller-metric-value" th:text="'¥' + ${monthlyRevenue != null ? monthlyRevenue : '199999'}">¥199999</div>
+                        </div>
+                    </div>
+
+                    <div class="seller-section-head">
+                        <div>
+                            <h2 class="seller-section-title">店铺商品</h2>
+                            <p class="seller-section-copy">优先展示最近经营的商品条目，方便快速查看售价、库存与销售表现。</p>
+                        </div>
+                    </div>
+
+                    <div class="seller-product-stack">
+                        <article class="seller-product-card" th:each="product : ${products}">
+                            <div class="seller-product-media">
+                                <img th:src="${product.displayImage}" th:alt="${product.name}" class="seller-product-image"
+                                     onerror="this.onerror=null;this.src='/images/placeholder-product.svg';">
+                            </div>
+                            <div class="seller-product-body">
+                                <div class="seller-product-top">
+                                    <div>
+                                        <h3 class="seller-product-name" th:text="${product.name}">云屿奶油沙发</h3>
+                                        <p class="seller-product-copy" th:text="${product.subtitle != null ? product.subtitle : '精选家居单品，正在稳定出单。'}">云感亲肤面料，适合客厅主位陈列。</p>
+                                    </div>
+                                    <span class="status-pill"
+                                          th:classappend="${product.status == 1} ? ' status-pill--completed' : ' status-pill--cancelled'"
+                                          th:text="${product.status == 1} ? '在售中' : '待上架'">
+                                        在售中
+                                    </span>
+                                </div>
+
+                                <div class="seller-product-meta">
+                                    <div class="seller-meta-block">
+                                        <span class="summary-caption">售价</span>
+                                        <strong class="summary-price" th:text="'¥' + ${product.price}">¥2899.00</strong>
+                                    </div>
+                                    <div class="seller-meta-block">
+                                        <span class="summary-caption">库存</span>
+                                        <strong class="summary-value" th:text="${product.stock} + ' 件'">18 件</strong>
+                                    </div>
+                                    <div class="seller-meta-block">
+                                        <span class="summary-caption">累计销量</span>
+                                        <strong class="summary-value" th:text="${product.sales} + ' 单'">126 单</strong>
+                                    </div>
+                                </div>
+
+                                <div class="seller-product-actions">
+                                    <a th:href="@{/seller/products/{id}/edit(id=${product.id})}" class="btn btn-outline-primary">
+                                        <i class="bi bi-pencil-square me-1"></i>
+                                        编辑商品
+                                    </a>
+                                    <form th:action="@{/seller/products/{id}/toggle(id=${product.id})}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-outline-secondary" th:text="${product.status == 1} ? '暂停上架' : '立即上架'">暂停上架</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据报表 - 管理后台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="bg-light">
+    <div th:replace="~{fragments/header :: header}"></div>
+    <div class="container-fluid admin-page py-4">
+        <div class="row g-4">
+            <div th:replace="~{fragments/admin-sidebar :: sidebar('reports')}"></div>
+            <div class="col-lg-9 col-xl-10 admin-main">
+                <div class="admin-page-header d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="mb-0">数据报表</h4>
+                </div>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="card admin-stat-card">
+                            <div class="card-body">
+                                <h6 class="text-muted">平台 GMV</h6>
+                                <h3 class="text-danger mb-0">¥<span th:text="${#numbers.formatInteger(totalGmv, 0, 'COMMA')}">0</span></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card admin-stat-card">
+                            <div class="card-body">
+                                <h6 class="text-muted">订单总数</h6>
+                                <h3 class="mb-0" th:text="${totalOrders}">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card admin-stat-card">
+                            <div class="card-body">
+                                <h6 class="text-muted">客单价</h6>
+                                <h3 class="mb-0">¥<span th:text="${avgOrderAmount}">0</span></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="card shadow-sm h-100 border-0">
+                            <div class="card-header bg-white fw-bold">分类销售额</div>
+                            <div class="card-body">
+                                <div class="mb-3" th:each="row : ${salesReport}">
+                                    <div class="d-flex justify-content-between small mb-1">
+                                        <span th:text="${row['category']}">分类</span>
+                                        <span>¥<span th:text="${row['amount']}">0</span> / <span th:text="${row['orders']}">0</span> 单</span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar chart-bar" role="progressbar"
+                                             th:attr="style=${'width:' + row['percent'] + '%'}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card shadow-sm h-100 border-0">
+                            <div class="card-header bg-white fw-bold">月度趋势</div>
+                            <div class="card-body">
+                                <div class="d-flex align-items-end justify-content-between" style="height: 180px;">
+                                    <div class="text-center flex-fill px-1" th:each="t : ${monthlyTrend}">
+                                        <div class="chart-bar mx-auto mb-2"
+                                             th:attr="style=${'height:' + (t['percent'] * 1.6) + 'px; width: 24px; min-height: 4px;'}"></div>
+                                        <small class="text-muted" th:text="${t['month']}">月</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

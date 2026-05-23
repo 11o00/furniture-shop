@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>收货地址 - 家具商城</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="bg-light">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="container py-5">
+        <div class="profile-shell">
+            <div class="row g-4">
+                <div class="col-lg-3">
+                    <aside class="profile-side-card">
+                        <div class="profile-side-head">
+                            <span class="profile-side-icon"><i class="bi bi-person-circle"></i></span>
+                            <div>
+                                <div class="profile-side-title">个人中心</div>
+                                <div class="profile-side-subtitle">管理账户资料与常用信息</div>
+                            </div>
+                        </div>
+                        <nav class="profile-menu">
+                            <a th:href="@{/profile}" class="profile-menu-link">
+                                <i class="bi bi-person-vcard"></i>
+                                <span>个人信息</span>
+                            </a>
+                            <a th:href="@{/profile/addresses}" class="profile-menu-link active">
+                                <i class="bi bi-geo-alt"></i>
+                                <span>收货地址</span>
+                            </a>
+                            <a th:href="@{/profile/favorites}" class="profile-menu-link">
+                                <i class="bi bi-heart"></i>
+                                <span>我的收藏</span>
+                            </a>
+                            <a th:href="@{/profile/reviews}" class="profile-menu-link">
+                                <i class="bi bi-chat-square-quote"></i>
+                                <span>我的评价</span>
+                            </a>
+                            <a th:href="@{/order/my-orders}" class="profile-menu-link">
+                                <i class="bi bi-receipt"></i>
+                                <span>我的订单</span>
+                            </a>
+                        </nav>
+                    </aside>
+                </div>
+
+                <div class="col-lg-9">
+                    <section class="section-panel">
+                        <div class="page-hero">
+                            <div>
+                                <div class="subtle-chip mb-3">
+                                    <i class="bi bi-stars"></i>
+                                    <span>常用信息</span>
+                                </div>
+                                <h1 class="page-hero-title">收货地址</h1>
+                                <p class="page-hero-copy">统一管理常用联系人、电话与地址，让结算时填写更快更顺手。</p>
+                            </div>
+                            <button class="btn btn-primary page-hero-action" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                                <i class="bi bi-plus-lg me-1"></i>
+                                新增地址
+                            </button>
+                        </div>
+
+                        <div class="panel-toolbar">
+                            <div class="toolbar-stat">
+                                <span class="toolbar-stat-value" th:text="${#lists.size(addresses)}">0</span>
+                                <span class="toolbar-stat-label">个地址</span>
+                            </div>
+                            <div class="toolbar-stat">
+                                <span class="toolbar-stat-value" th:text="${#lists.size(addresses.?[isDefault])}">0</span>
+                                <span class="toolbar-stat-label">个默认地址</span>
+                            </div>
+                        </div>
+
+                        <div th:if="${#lists.isEmpty(addresses)}" class="empty-state">
+                            <div class="empty-state-icon">
+                                <i class="bi bi-geo-alt"></i>
+                            </div>
+                            <h3 class="empty-state-title">还没有收货地址</h3>
+                            <p class="empty-state-copy">添加一个常用地址后，提交订单时会自动带出，购物流程会轻松很多。</p>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                                <i class="bi bi-plus-lg me-1"></i>
+                                添加第一个地址
+                            </button>
+                        </div>
+
+                        <div th:if="${!#lists.isEmpty(addresses)}" class="row g-4">
+                            <div class="col-md-6" th:each="addr : ${addresses}">
+                                <article class="address-tile" th:classappend="${addr.isDefault} ? ' address-tile--default' : ''">
+                                    <div class="address-tile-top">
+                                        <div>
+                                            <div class="address-name-row">
+                                                <h3 class="address-name" th:text="${addr.name}">张三</h3>
+                                                <span th:if="${addr.isDefault}" class="badge rounded-pill text-bg-primary">默认地址</span>
+                                            </div>
+                                            <div class="address-phone" th:text="${addr.phone}">13800138000</div>
+                                        </div>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary rounded-circle address-more" type="button" data-bs-toggle="dropdown" aria-label="更多操作">
+                                                <i class="bi bi-three-dots"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li th:if="${!addr.isDefault}">
+                                                    <form th:action="@{/profile/addresses/{id}/default(id=${addr.id})}" method="post">
+                                                        <button type="submit" class="dropdown-item">
+                                                            <i class="bi bi-check2-circle me-2"></i>设为默认
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                                <li>
+                                                    <form th:action="@{/profile/addresses/{id}/delete(id=${addr.id})}" method="post">
+                                                        <button type="submit" class="dropdown-item text-danger">
+                                                            <i class="bi bi-trash3 me-2"></i>删除地址
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="address-divider"></div>
+                                    <p class="address-detail" th:text="${addr.address}">上海市浦东新区张江路 88 号 18 楼</p>
+                                    <div class="address-meta">
+                                        <i class="bi bi-clock-history"></i>
+                                        <span th:text="${#temporals.format(addr.createdAt, 'yyyy-MM-dd HH:mm')}">2026-05-23 16:30</span>
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addAddressModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <form th:action="@{/profile/addresses/add}" method="post" th:object="${newAddress}">
+                    <div class="modal-header border-0 pb-0">
+                        <div>
+                            <h2 class="modal-title fs-5">新增收货地址</h2>
+                            <p class="text-muted small mb-0">填写常用联系人信息，提交订单会更方便。</p>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
+                    </div>
+                    <div class="modal-body pt-3">
+                        <div class="mb-3">
+                            <label class="form-label">收货人</label>
+                            <input type="text" th:field="*{name}" class="form-control" placeholder="请输入收货人姓名" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">联系电话</label>
+                            <input type="text" th:field="*{phone}" class="form-control" placeholder="请输入联系电话" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">详细地址</label>
+                            <textarea th:field="*{address}" class="form-control" rows="4" placeholder="请输入街道、门牌号、楼层等详细信息" required></textarea>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" th:field="*{isDefault}">
+                            <label class="form-check-label">设为默认收货地址</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 pt-0">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary">保存地址</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单详情 - 家具商城</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="bg-light">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="container py-5">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb breadcrumb-shell mb-0">
+                <li class="breadcrumb-item"><a th:href="@{/}" class="text-decoration-none">首页</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/order/my-orders}" class="text-decoration-none">我的订单</a></li>
+                <li class="breadcrumb-item active" aria-current="page">订单详情</li>
+            </ol>
+        </nav>
+
+        <section class="section-panel">
+            <div class="page-hero page-hero--compact">
+                <div>
+                    <div class="subtle-chip mb-3">
+                        <i class="bi bi-receipt-cutoff"></i>
+                        <span>订单详情</span>
+                    </div>
+                    <h1 class="page-hero-title">订单号 <span th:text="${order.orderNo}">ORD202605230001</span></h1>
+                    <p class="page-hero-copy">这里汇总了订单状态、商品清单和配送信息，方便随时回看。</p>
+                </div>
+                <span class="status-pill status-pill--lg"
+                      th:classappend="${order.status.name() == 'PENDING'} ? ' status-pill--pending' :
+                                      (${order.status.name() == 'SHIPPED'} ? ' status-pill--shipped' :
+                                      (${order.status.name() == 'COMPLETED'} ? ' status-pill--completed' : ' status-pill--cancelled'))"
+                      th:text="${order.status.name() == 'PENDING'} ? '待付款' :
+                              (${order.status.name() == 'SHIPPED'} ? '待收货' :
+                              (${order.status.name() == 'COMPLETED'} ? '已完成' : '已取消'))">
+                    待付款
+                </span>
+            </div>
+
+            <div class="detail-grid">
+                <div class="detail-card-v2">
+                    <div class="detail-card-v2__title">
+                        <i class="bi bi-truck"></i>
+                        <span>配送信息</span>
+                    </div>
+                    <div class="detail-meta-list">
+                        <div class="detail-meta-row">
+                            <span class="detail-meta-label">联系电话</span>
+                            <span class="detail-meta-value" th:text="${order.phone}">13800138000</span>
+                        </div>
+                        <div class="detail-meta-row">
+                            <span class="detail-meta-label">收货地址</span>
+                            <span class="detail-meta-value detail-meta-value--wrap" th:text="${order.address}">上海市浦东新区张江路 88 号</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-card-v2">
+                    <div class="detail-card-v2__title">
+                        <i class="bi bi-clock-history"></i>
+                        <span>时间节点</span>
+                    </div>
+                    <div class="detail-meta-list">
+                        <div class="detail-meta-row">
+                            <span class="detail-meta-label">下单时间</span>
+                            <span class="detail-meta-value" th:text="${#temporals.format(order.createdAt, 'yyyy-MM-dd HH:mm')}">2026-05-23 16:30</span>
+                        </div>
+                        <div class="detail-meta-row" th:if="${order.paymentTime != null}">
+                            <span class="detail-meta-label">付款时间</span>
+                            <span class="detail-meta-value" th:text="${#temporals.format(order.paymentTime, 'yyyy-MM-dd HH:mm')}">2026-05-23 16:35</span>
+                        </div>
+                        <div class="detail-meta-row" th:if="${order.shippingTime != null}">
+                            <span class="detail-meta-label">发货时间</span>
+                            <span class="detail-meta-value" th:text="${#temporals.format(order.shippingTime, 'yyyy-MM-dd HH:mm')}">2026-05-24 10:00</span>
+                        </div>
+                        <div class="detail-meta-row" th:if="${order.completionTime != null}">
+                            <span class="detail-meta-label">完成时间</span>
+                            <span class="detail-meta-value" th:text="${#temporals.format(order.completionTime, 'yyyy-MM-dd HH:mm')}">2026-05-26 18:00</span>
+                        </div>
+                        <div class="detail-meta-row" th:if="${order.cancellationTime != null}">
+                            <span class="detail-meta-label">取消时间</span>
+                            <span class="detail-meta-value" th:text="${#temporals.format(order.cancellationTime, 'yyyy-MM-dd HH:mm')}">2026-05-23 18:00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-card-v2 detail-card-v2--full">
+                <div class="detail-card-v2__title">
+                    <i class="bi bi-box-seam"></i>
+                    <span>商品清单</span>
+                </div>
+                <div class="detail-item-list">
+                    <div class="detail-item-row" th:each="item : ${order.orderItems}">
+                        <div th:replace="~{fragments/product-image :: thumb(product=${item.product})}"></div>
+                        <div class="detail-item-content">
+                            <div class="detail-item-name" th:text="${item.productName}">北欧餐桌</div>
+                            <div class="detail-item-meta">
+                                <span th:text="'数量 x ' + ${item.quantity}">数量 x 1</span>
+                                <span th:text="'单价 ¥' + ${item.price}">单价 ¥2599.00</span>
+                            </div>
+                        </div>
+                        <div class="detail-item-price" th:text="'¥' + ${item.price}">¥2599.00</div>
+                    </div>
+                </div>
+                <div class="detail-total-bar">
+                    <div>
+                        <div class="summary-caption">商品总数</div>
+                        <div class="summary-value" th:text="${#lists.size(order.orderItems)} + ' 件商品'">1 件商品</div>
+                    </div>
+                    <div class="text-end">
+                        <div class="summary-caption">订单总计</div>
+                        <div class="summary-price" th:text="'¥' + ${order.totalAmount}">¥2599.00</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-action-bar">
+                <a th:href="@{/order/my-orders}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>
+                    返回订单列表
+                </a>
+                <form th:if="${order.status.name() == 'PENDING'}" th:action="@{/order/{id}/cancel(id=${order.id})}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-outline-danger">
+                        <i class="bi bi-x-circle me-1"></i>
+                        取消订单
+                    </button>
+                </form>
+                <form th:if="${order.status.name() == 'SHIPPED'}" th:action="@{/order/{id}/confirm(id=${order.id})}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle me-1"></i>
+                        确认收货
+                    </button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

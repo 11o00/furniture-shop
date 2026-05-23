@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家具商城 - 首页</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .category-card {
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s;
+        }
+        .category-card:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div th:if="${banners != null and !banners.isEmpty()}" id="homeBanner" class="carousel slide home-carousel" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#homeBanner" th:each="banner, stat : ${banners}"
+                    th:data-bs-slide-to="${stat.index}" th:class="${stat.first} ? 'active' : ''"
+                    th:attr="aria-current=${stat.first} ? 'true' : 'false'"
+                    th:aria-label="${'轮播' + stat.count}"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item" th:each="banner, stat : ${banners}" th:classappend="${stat.first} ? 'active' : ''">
+                <img th:src="${banner.imageUrl}" th:alt="${banner.title}" class="carousel-bg d-block w-100"
+                     onerror="this.onerror=null;this.src='/images/banner1.jpg';">
+                <div class="carousel-caption">
+                    <h2 class="fw-bold" th:text="${banner.title}"></h2>
+                    <a th:href="${banner.linkUrl}" class="btn btn-light btn-lg mt-2">立即查看</a>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#homeBanner" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#homeBanner" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+
+    <div th:if="${banners == null or banners.isEmpty()}" class="home-hero-fallback d-flex align-items-center justify-content-center text-white">
+        <div class="text-center px-3">
+            <h1 class="display-4 fw-bold mb-4">品质家具，品味生活</h1>
+            <p class="lead mb-4">精选全球优质家具，让您的家更温馨</p>
+            <a th:href="@{/products}" class="btn btn-light btn-lg px-5">立即选购</a>
+        </div>
+    </div>
+
+    <div class="container py-5">
+        <h2 class="text-center mb-4 fw-bold">商品分类</h2>
+        <div class="row g-3 mb-5">
+            <div class="col-md-2 col-4" th:each="category : ${categories}">
+                <a th:href="@{/products(categoryId=${category.id})}" class="category-card card text-center p-4">
+                    <i class="bi bi-box-seam display-4 text-primary mb-2"></i>
+                    <h5 class="mb-0" th:text="${category.name}"></h5>
+                </a>
+            </div>
+        </div>
+
+        <h2 class="text-center mb-4 fw-bold">热销商品</h2>
+        <div class="row g-4 mb-5">
+            <div class="col-md-3 col-6" th:each="product : ${hotProducts}">
+                <div class="card product-card h-100">
+                    <div th:replace="~{fragments/product-image :: card(product=${product})}"></div>
+                    <div class="card-body">
+                        <h6 class="card-title text-truncate" th:text="${product.name}"></h6>
+                        <p class="text-danger fw-bold mb-0" th:text="'¥' + ${product.price}"></p>
+                    </div>
+                    <div class="card-footer bg-white border-top-0">
+                        <a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-primary w-100">查看详情</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="text-center mb-4 fw-bold">新品上架</h2>
+        <div class="row g-4">
+            <div class="col-md-3 col-6" th:each="product : ${newProducts}">
+                <div class="card product-card h-100">
+                    <div th:replace="~{fragments/product-image :: card(product=${product})}"></div>
+                    <div class="card-body">
+                        <h6 class="card-title text-truncate" th:text="${product.name}"></h6>
+                        <p class="text-danger fw-bold mb-0" th:text="'¥' + ${product.price}"></p>
+                    </div>
+                    <div class="card-footer bg-white border-top-0">
+                        <a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-primary w-100">查看详情</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

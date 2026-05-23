@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单管理 - 管理后台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="bg-light">
+    <div th:replace="~{fragments/header :: header}"></div>
+    <div class="container-fluid admin-page py-4">
+        <div class="row g-4">
+            <div th:replace="~{fragments/admin-sidebar :: sidebar('orders')}"></div>
+            <div class="col-lg-9 col-xl-10 admin-main">
+                <div class="admin-page-header d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="mb-0">订单管理</h4>
+                    <span class="badge bg-secondary admin-mock-badge">模拟数据</span>
+                </div>
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table align-middle table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>订单号</th>
+                                        <th>买家</th>
+                                        <th>商品</th>
+                                        <th>总金额</th>
+                                        <th>状态</th>
+                                        <th>下单时间</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="order : ${orders}">
+                                        <td><small th:text="${order.title}">订单号</small></td>
+                                        <td th:text="${order.subtitle}">买家</td>
+                                        <td><small th:text="${order.content}">商品</small></td>
+                                        <td class="text-danger fw-bold">¥<span th:text="${order.extra}">0</span></td>
+                                        <td><span class="badge" th:classappend="${order.badgeClass}" th:text="${order.statusLabel}">状态</span></td>
+                                        <td><small th:text="${order.time}">时间</small></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

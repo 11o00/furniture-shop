@@ -1,0 +1,118 @@
+/* 管理后台样式 */
+.admin-page {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.admin-sidebar {
+    position: relative;
+    z-index: 10;
+}
+
+.admin-sidebar .card {
+    position: sticky;
+    top: 88px;
+}
+
+.admin-sidebar .list-group-item {
+    border-left: 3px solid transparent;
+    cursor: pointer;
+    text-decoration: none !important;
+    display: block;
+    color: #212529 !important;
+    padding: 0.75rem 1rem;
+    pointer-events: auto;
+}
+
+.admin-sidebar .list-group-item i {
+    width: 1.25rem;
+}
+
+.admin-sidebar .list-group-item.active {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    border-left-color: #a71d2a;
+    color: #fff !important;
+    font-weight: 500;
+}
+
+.admin-sidebar .list-group-item:hover:not(.active) {
+    background-color: #fff5f5;
+    border-left-color: #dc3545;
+    color: #dc3545 !important;
+}
+
+.admin-sidebar .card-footer a {
+    color: #6c757d !important;
+    display: block;
+    padding: 0.25rem 0;
+}
+
+.admin-sidebar .card-footer a:hover {
+    color: #dc3545 !important;
+}
+
+.admin-main {
+    min-height: 480px;
+}
+
+.admin-page-header {
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.admin-stat-card {
+    border: none;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease;
+}
+
+.admin-stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.admin-mock-badge {
+    font-size: 0.7rem;
+    vertical-align: middle;
+}
+
+.admin-table-thumb {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.admin-banner-preview {
+    height: 120px;
+    object-fit: cover;
+    width: 100%;
+    border-radius: 8px;
+}
+
+.chart-bar {
+    border-radius: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.admin-quick-btn {
+    min-height: 88px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.admin-quick-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 991px) {
+    .admin-sidebar .card {
+        position: static;
+    }
+}

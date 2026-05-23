@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <nav th:fragment="sidebar(active)" class="col-lg-3 col-xl-2 admin-sidebar" aria-label="管理后台导航">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center py-3">
+                <h5 class="mb-0"><i class="bi bi-shield-lock me-1"></i> 管理后台</h5>
+                <span class="badge bg-light text-danger admin-mock-badge">Admin</span>
+            </div>
+            <div class="list-group list-group-flush" role="list">
+                <a role="listitem" th:href="@{/admin}" th:class="${active == 'dashboard'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                    <i class="bi bi-speedometer2 me-2"></i>控制台
+                </a>
+                <a role="listitem" th:href="@{/admin/users}" th:class="${active == 'users'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                    <i class="bi bi-people me-2"></i>用户管理
+                </a>
+                <a role="listitem" th:href="@{/admin/products}" th:class="${active == 'products'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                    <i class="bi bi-box-seam me-2"></i>商品管理
+                </a>
+                <a role="listitem" th:href="@{/admin/categories}" th:class="${active == 'categories'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                    <i class="bi bi-tags me-2"></i>分类管理
+                </a>
+                <a role="listitem" th:href="@{/admin/orders}" th:class="${active == 'orders'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                    <i class="bi bi-receipt me-2"></i>订单管理
+                </a>
+                <a role="listitem" th:href="@{/admin/banners}" th:class="${active == 'banners'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                    <i class="bi bi-images me-2"></i>轮播图管理
+                </a>
+                <a role="listitem" th:href="@{/admin/reviews}" th:class="${active == 'reviews'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                    <i class="bi bi-chat-square-text me-2"></i>评价管理
+                </a>
+                <a role="listitem" th:href="@{/admin/announcements}" th:class="${active == 'announcements'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                    <i class="bi bi-megaphone me-2"></i>公告管理
+                </a>
+                <a role="listitem" th:href="@{/admin/reports}" th:class="${active == 'reports'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                    <i class="bi bi-bar-chart-line me-2"></i>数据报表
+                </a>
+                <a role="listitem" th:href="@{/admin/settings}" th:class="${active == 'settings'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                    <i class="bi bi-gear me-2"></i>系统设置
+                </a>
+            </div>
+            <div class="card-footer bg-light border-top py-3">
+                <a th:href="@{/}" class="text-decoration-none small">
+                    <i class="bi bi-house me-1"></i>返回商城首页
+                </a>
+            </div>
+        </div>
+    </nav>
+</body>
+</html>

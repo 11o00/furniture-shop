@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单管理 - 卖家中心</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-3 mb-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">卖家中心</h5>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <a th:href="@{/seller}" class="list-group-item list-group-item-action">商品管理</a>
+                        <a th:href="@{/seller/orders}" class="list-group-item list-group-item-action active">订单管理</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-9">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">我的订单</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${orders.isEmpty()}">
+                            <p class="text-muted text-center py-4">暂无订单</p>
+                        </div>
+                        
+                        <div th:if="${!orders.isEmpty()}">
+                            <div class="table-responsive">
+                                <table class="table align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>订单号</th>
+                                            <th>商品</th>
+                                            <th>数量</th>
+                                            <th>金额</th>
+                                            <th>状态</th>
+                                            <th>收货人</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="order : ${orders}">
+                                            <td>
+                                                <small th:text="${order.orderNo}"></small>
+                                            </td>
+                                            <td>
+                                                <small th:each="item : ${order.orderItems}" th:text="${item.productName}"></small>
+                                            </td>
+                                            <td>
+                                                <small th:each="item : ${order.orderItems}" th:text="${item.quantity}"></small>
+                                            </td>
+                                            <td class="text-danger fw-bold" th:text="'¥' + ${order.totalAmount}"></td>
+                                            <td>
+                                                <span class="badge" 
+                                                      th:class="${order.status.name() == 'PENDING' ? 'badge bg-warning' : 
+                                                                (order.status.name() == 'PAID' ? 'badge bg-info' : 
+                                                                (order.status.name() == 'SHIPPED' ? 'badge bg-primary' : 
+                                                                (order.status.name() == 'COMPLETED' ? 'badge bg-success' : 'badge bg-secondary')))}"
+                                                      th:text="${order.status.name() == 'PENDING' ? '待付款' : 
+                                                               (order.status.name() == 'PAID' ? '已付款' : 
+                                                               (order.status.name() == 'SHIPPED' ? '已发货' : 
+                                                               (order.status.name() == 'COMPLETED' ? '已完成' : '已取消')))}">
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <small th:text="${order.address}"></small>
+                                            </td>
+                                            <td>
+                                                <form th:if="${order.status.name() == 'PAID'}" th:action="@{/seller/orders/{id}/ship(id=${order.id})}" method="post">
+                                                    <button type="submit" class="btn btn-sm btn-primary">发货</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

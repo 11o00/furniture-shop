@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <!-- 商品卡片主图（列表/首页） -->
+    <div th:fragment="card (product)" class="product-img-wrap product-img-wrap--card">
+        <a th:href="@{/products/{id}(id=${product.id})}" class="product-img-link" tabindex="-1" aria-hidden="true">
+            <img th:src="${product.displayImage}"
+                 th:alt="${product.name}"
+                 class="product-img"
+                 loading="lazy"
+                 decoding="async"
+                 onerror="this.onerror=null;this.src='/images/placeholder-product.svg';">
+        </a>
+        <span class="product-badge product-badge--new" th:if="${product.isNew == true}">新品</span>
+        <span class="product-badge product-badge--hot" th:if="${product.recommended}">推荐</span>
+    </div>
+
+    <!-- 缩略图（购物车/订单） -->
+    <div th:fragment="thumb (product)" class="product-img-wrap product-img-wrap--thumb">
+        <img th:if="${product != null}"
+             th:src="${product.displayImage}"
+             th:alt="${product.name}"
+             class="product-img"
+             loading="lazy"
+             onerror="this.onerror=null;this.src='/images/placeholder-product.svg';">
+        <img th:if="${product == null}"
+             src="/images/placeholder-product.svg"
+             alt="商品"
+             class="product-img">
+    </div>
+
+    <!-- 详情页大图 -->
+    <div th:fragment="detail (product)" class="product-img-wrap product-img-wrap--detail">
+        <img th:src="${product.displayImage}"
+             th:alt="${product.name}"
+             class="product-img"
+             onerror="this.onerror=null;this.src='/images/placeholder-product.svg';">
+    </div>
+</body>
+</html>

@@ -26,9 +26,6 @@ public class Cart {
     @Column(nullable = false)
     private Integer quantity = 1;
 
-    @Column(name = "selected")
-    private Boolean selected = true;
-
     @Column(name = "create_time")
     private LocalDateTime createTime;
 

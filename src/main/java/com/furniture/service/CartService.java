@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -35,6 +36,7 @@ public class CartService {
         Cart existingCart = cartRepository.findByUserIdAndProductId(userId, productId).orElse(null);
         if (existingCart != null) {
             existingCart.setQuantity(existingCart.getQuantity() + quantity);
+            existingCart.setUpdateTime(LocalDateTime.now());
             cartRepository.save(existingCart);
         } else {
             Product product = productRepository.findById(productId).orElse(null);
@@ -45,6 +47,8 @@ public class CartService {
                 cart.setUser(user);
                 cart.setProduct(product);
                 cart.setQuantity(quantity);
+                cart.setCreateTime(LocalDateTime.now());
+                cart.setUpdateTime(LocalDateTime.now());
                 cartRepository.save(cart);
             }
         }
